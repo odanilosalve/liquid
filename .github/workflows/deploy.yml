@@ -58,14 +58,21 @@ jobs:
       - name: Validate AWS credentials
         run: |
           if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
-            echo "Error: AWS_ACCESS_KEY_ID secret is not set"
+            echo "::error::AWS_ACCESS_KEY_ID secret is not set"
+            echo "Please configure it in: Settings → Secrets and variables → Actions"
             exit 1
           fi
           if [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
-            echo "Error: AWS_SECRET_ACCESS_KEY secret is not set"
+            echo "::error::AWS_SECRET_ACCESS_KEY secret is not set"
+            echo "Please configure it in: Settings → Secrets and variables → Actions"
             exit 1
           fi
-          echo "AWS credentials secrets are configured"
+          # Check for common issues with credentials
+          ACCESS_KEY_LENGTH=${#AWS_ACCESS_KEY_ID}
+          if [ "$ACCESS_KEY_LENGTH" -lt 16 ] || [ "$ACCESS_KEY_LENGTH" -gt 128 ]; then
+            echo "::warning::AWS_ACCESS_KEY_ID length seems unusual: $ACCESS_KEY_LENGTH characters"
+          fi
+          echo "✓ AWS credentials secrets are configured"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -76,14 +83,26 @@ jobs:
 
       - name: Verify AWS credentials
         run: |
-          aws sts get-caller-identity || {
-            echo "Error: Failed to authenticate with AWS"
-            echo "Please verify that:"
-            echo "1. AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY secrets are correct"
-            echo "2. The credentials have not expired"
-            echo "3. There are no extra spaces or special characters in the secrets"
+          echo "Verifying AWS credentials..."
+          if aws sts get-caller-identity; then
+            echo "✓ AWS credentials are valid"
+            aws sts get-caller-identity
+          else
+            echo "::error::Failed to authenticate with AWS"
+            echo ""
+            echo "Possible causes:"
+            echo "1. AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY are incorrect"
+            echo "2. The credentials have expired or been revoked"
+            echo "3. Extra spaces or special characters in the secrets"
+            echo "4. The IAM user doesn't have necessary permissions"
+            echo ""
+            echo "To fix:"
+            echo "1. Go to AWS IAM → Users → Your user → Security credentials"
+            echo "2. Verify or create new access keys"
+            echo "3. Update the secrets in GitHub: Settings → Secrets and variables → Actions"
+            echo "4. Make sure to copy the values exactly (no spaces, no quotes)"
             exit 1
-          }
+          fi
 
       - name: Deploy to AWS
         working-directory: ./backend
