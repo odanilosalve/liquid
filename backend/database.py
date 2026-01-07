@@ -16,7 +16,11 @@ logger = logging.getLogger()
 class ExternalAPIUnavailableError(ExternalAPIError):
     pass
 
-dynamodb = boto3.resource('dynamodb')
+def get_dynamodb_resource():
+    region = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')
+    return boto3.resource('dynamodb', region_name=region)
+
+dynamodb = get_dynamodb_resource()
 
 def get_currency_table_name():
     table_name = os.environ.get('CURRENCY_TABLE')

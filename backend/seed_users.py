@@ -12,7 +12,11 @@ from exceptions import DatabaseError, ConfigurationError, AuthenticationError
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-dynamodb = boto3.resource('dynamodb')
+def get_dynamodb_resource():
+    region = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')
+    return boto3.resource('dynamodb', region_name=region)
+
+dynamodb = get_dynamodb_resource()
 users_table_name = os.environ.get('USERS_TABLE', 'users-dev')
 users_table = dynamodb.Table(users_table_name)
 
