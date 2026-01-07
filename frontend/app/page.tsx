@@ -43,8 +43,9 @@ export default function Home() {
         </div>
       )}
       <div className="container mx-auto px-4 py-16 flex-1">
-        {isAuthenticated ? <CurrencyConverter /> : <LoginForm />}
+        {isAuthenticated ? <CurrencyConverter /> : null}
       </div>
+      {!isAuthenticated && <LoginForm />}
       <footer className="py-6" style={{ backgroundColor: '#4180ab' }}>
         <div className="container mx-auto px-4">
           <div className="flex justify-center items-center gap-6 text-sm">
