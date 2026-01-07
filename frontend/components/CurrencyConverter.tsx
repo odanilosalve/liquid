@@ -28,10 +28,10 @@ export default function CurrencyConverter() {
     <div className="max-w-3xl mx-auto">
       <div className="rounded p-8 mb-6" style={{ backgroundColor: '#ffffff', border: '1px solid #e4ebf0' }}>
         <div className="grid md:grid-cols-12 gap-4 items-end">
-          <CurrencyInput value={amount} onChange={setAmount} label="Valor" />
-          <CurrencySelect value={fromCurrency} onChange={setFromCurrency} label="De" />
+          <CurrencyInput value={amount} onChange={setAmount} label="Amount" />
+          <CurrencySelect value={fromCurrency} onChange={setFromCurrency} label="From" />
           <SwapButton onClick={swapCurrencies} />
-          <CurrencySelect value={toCurrency} onChange={setToCurrency} label="Para" />
+          <CurrencySelect value={toCurrency} onChange={setToCurrency} label="To" />
         </div>
 
         <ConvertButton onClick={convert} loading={loading} />

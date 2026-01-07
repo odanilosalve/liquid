@@ -1,8 +1,9 @@
 export const CURRENCIES = [
-  { code: 'USD', name: 'Dólar Americano' },
-  { code: 'BRL', name: 'Real Brasileiro' },
+  { code: 'USD', name: 'US Dollar' },
+  { code: 'BRL', name: 'Brazilian Real' },
   { code: 'EUR', name: 'Euro' },
-  { code: 'GBP', name: 'Libra Esterlina' },
-  { code: 'JPY', name: 'Iene Japonês' },
+  { code: 'GBP', name: 'British Pound' },
+  { code: 'JPY', name: 'Japanese Yen' },
 ];
+
 

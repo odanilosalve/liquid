@@ -30,3 +30,4 @@ export default function CurrencyInput({ value, onChange, label }: CurrencyInputP
   );
 }
 
+

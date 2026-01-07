@@ -22,11 +22,12 @@ export default function SwapButton({ onClick }: SwapButtonProps) {
         onMouseLeave={(e) => {
           e.currentTarget.style.backgroundColor = '#e4ebf0';
         }}
-        title="Trocar moedas"
+        title="Swap currencies"
       >
         ⇄
       </button>
     </div>
   );
 }
+
 

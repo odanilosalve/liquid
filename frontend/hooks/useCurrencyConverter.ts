@@ -13,12 +13,12 @@ export function useCurrencyConverter() {
 
   const convert = async () => {
     if (!amount || parseFloat(amount) <= 0) {
-      setError('Por favor, insira um valor válido');
+      setError('Please enter a valid amount');
       return;
     }
 
     if (fromCurrency === toCurrency) {
-      setError('Selecione moedas diferentes');
+      setError('Please select different currencies');
       return;
     }
 
@@ -30,7 +30,7 @@ export function useCurrencyConverter() {
       const data = await convertCurrency(parseFloat(amount), fromCurrency, toCurrency);
       setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao converter moeda');
+      setError(err instanceof Error ? err.message : 'Currency conversion error');
     } finally {
       setLoading(false);
     }
@@ -63,4 +63,5 @@ export function useCurrencyConverter() {
     getCurrencyInfo,
   };
 }
+
 
