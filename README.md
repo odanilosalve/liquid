@@ -69,11 +69,17 @@ O projeto possui CI/CD configurado via GitHub Actions.
 
 Configurar Secrets no GitHub:
 1. Vá em Settings → Secrets and variables → Actions
-2. Adicione as seguintes secrets (Esses dados eu passo no privado):
-   - AWS_ACCESS_KEY_ID
-   - AWS_SECRET_ACCESS_KEY
-   - JWT_SECRET_KEY
-   - AWS_DEFAULT_REGION
+2. Adicione as seguintes secrets:
+   - AWS_ACCESS_KEY_ID: Sua chave de acesso AWS (ex: AKIAIOSFODNN7EXAMPLE)
+   - AWS_SECRET_ACCESS_KEY: Sua chave secreta AWS (ex: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY)
+   - JWT_SECRET_KEY: Chave secreta para JWT (mínimo 32 caracteres)
+   - AWS_DEFAULT_REGION: us-east-1 (opcional, padrão é us-east-1)
+
+Importante ao configurar as secrets:
+- NÃO inclua espaços antes ou depois dos valores
+- NÃO inclua aspas ao redor dos valores
+- Copie e cole os valores exatamente como aparecem no AWS IAM
+- Verifique se não há caracteres invisíveis ou quebras de linha
 
 Deploy automático:
 - Push para main/master → Deploy automático para dev
