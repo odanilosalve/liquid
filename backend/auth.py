@@ -11,7 +11,11 @@ from utils.config_validator import is_production
 
 logger = logging.getLogger()
 
-dynamodb = boto3.resource('dynamodb')
+def get_dynamodb_resource():
+    region = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')
+    return boto3.resource('dynamodb', region_name=region)
+
+dynamodb = get_dynamodb_resource()
 
 def get_users_table_name():
     table_name = os.environ.get('USERS_TABLE')
