@@ -8,13 +8,15 @@ interface CurrencyInputProps {
 
 export default function CurrencyInput({ value, onChange, label }: CurrencyInputProps) {
   const { styles, onFocus, onBlur } = useInputStyles();
+  const inputId = `currency-input-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
   return (
     <div className="md:col-span-2">
-      <label className="block text-xs uppercase tracking-wider mb-2" style={{ color: '#000000' }}>
+      <label htmlFor={inputId} className="block text-xs uppercase tracking-wider mb-2" style={{ color: '#000000' }}>
         {label}
       </label>
       <input
+        id={inputId}
         type="number"
         value={value}
         onChange={(e) => onChange(e.target.value)}
