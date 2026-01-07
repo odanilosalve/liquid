@@ -1,0 +1,10 @@
+{
+  "name": "liquid-backend",
+  "version": "1.0.0",
+  "description": "Backend API com AWS Lambda para conversão de moedas",
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-python-requirements": "^6.0.0"
+  }
+}
+

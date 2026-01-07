@@ -1,0 +1,67 @@
+service: liquid-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    STAGE: ${self:provider.stage}
+    CURRENCY_TABLE: ${self:custom.currencyTable}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+          Resource:
+            - Fn::GetAtt:
+                - CurrencyRatesTable
+                - Arn
+
+functions:
+  convert:
+    handler: handler.convert
+    events:
+      - http:
+          path: /convert
+          method: post
+          cors: true
+  health:
+    handler: handler.health
+    events:
+      - http:
+          path: /health
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    CurrencyRatesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.currencyTable}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: from_currency
+            AttributeType: S
+          - AttributeName: to_currency
+            AttributeType: S
+        KeySchema:
+          - AttributeName: from_currency
+            KeyType: HASH
+          - AttributeName: to_currency
+            KeyType: RANGE
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  currencyTable: currency-rates-${self:provider.stage}
+  pythonRequirements:
+    dockerizePip: non-linux
+    pythonBin: python3
+
