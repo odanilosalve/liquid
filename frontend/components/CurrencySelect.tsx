@@ -9,13 +9,15 @@ interface CurrencySelectProps {
 
 export default function CurrencySelect({ value, onChange, label }: CurrencySelectProps) {
   const { styles, onFocus, onBlur } = useInputStyles();
+  const selectId = `currency-select-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
   return (
     <div className="md:col-span-4">
-      <label className="block text-xs uppercase tracking-wider mb-2" style={{ color: '#000000' }}>
+      <label htmlFor={selectId} className="block text-xs uppercase tracking-wider mb-2" style={{ color: '#000000' }}>
         {label}
       </label>
       <select
+        id={selectId}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full px-4 py-3 rounded text-lg transition-colors"
