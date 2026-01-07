@@ -56,7 +56,7 @@ class TestValidateToken:
         
         invalid_token = 'invalid.token.here'
         
-        with pytest.raises(UnauthorizedError):
+        with pytest.raises(jwt_config.UnauthorizedError):
             jwt_config.validate_token(invalid_token)
 
     @patch.dict(os.environ, {'JWT_SECRET_KEY': 'test-secret-key-with-minimum-32-chars', 'JWT_ALGORITHM': 'HS256', 'JWT_EXPIRATION_HOURS': '24', 'STAGE': 'dev'})
@@ -71,7 +71,7 @@ class TestValidateToken:
         }
         expired_token = jwt.encode(payload, jwt_config.JWT_SECRET_KEY, algorithm='HS256')
         
-        with pytest.raises(UnauthorizedError) as exc_info:
+        with pytest.raises(jwt_config.UnauthorizedError) as exc_info:
             jwt_config.validate_token(expired_token)
         
         assert 'expired' in str(exc_info.value).lower()
