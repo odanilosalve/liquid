@@ -17,29 +17,7 @@ Arquitetura:
 
 ### Pré-requisitos
 
-- Python 3.11+
 - Node.js 20+
-- AWS CLI configurado
-- Conta AWS com permissões adequadas
-
-### Backend
-
-Instalar dependências:
-```bash
-cd backend
-npm install
-pip install -r requirements.txt
-```
-
-Configurar variáveis de ambiente:
-```bash
-cp ../.env.example ../.env
-```
-
-Executar testes:
-```bash
-pytest
-```
 
 ### Frontend
 
@@ -60,6 +38,8 @@ npm run dev
 ```
 
 Acessar: http://localhost:3000
+
+O frontend roda localmente e se conecta ao backend já deployado na AWS.
 
 ## Deploy para AWS
 
@@ -92,25 +72,13 @@ Configurar credenciais AWS:
 export AWS_ACCESS_KEY_ID=sua-chave
 export AWS_SECRET_ACCESS_KEY=sua-chave-secreta
 export AWS_DEFAULT_REGION=us-east-1
-```
-
-Configurar variáveis de ambiente:
-```bash
 export JWT_SECRET_KEY=sua-chave-jwt-secreta-minimo-32-caracteres
-export EXCHANGE_RATE_API_URL=https://api.exchangerate-api.com/v4/latest
-export ALLOWED_ORIGIN=https://seu-dominio.com
 ```
 
 Fazer deploy:
 ```bash
 cd backend
 serverless deploy --stage dev
-serverless deploy --stage prod
-```
-
-Verificar endpoints:
-```bash
-serverless info --stage dev
 ```
 
 ## Endpoints da API
@@ -121,7 +89,14 @@ Base URL: https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev
 
 Autentica um usuário e retorna um token JWT.
 
-Request:
+**Exemplo de chamada:**
+```bash
+curl -X POST https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"sua-senha"}'
+```
+
+**Request:**
 ```json
 {
   "username": "admin",
@@ -129,7 +104,7 @@ Request:
 }
 ```
 
-Response 200:
+**Response 200:**
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -140,31 +115,32 @@ Response 200:
 }
 ```
 
-Response 401:
+**Response 401:**
 ```json
 {
   "error": "Invalid credentials"
 }
 ```
 
-Exemplo cURL:
-```bash
-curl -X POST https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"sua-senha"}'
-```
-
 ### POST /convert
 
 Converte um valor de uma moeda para outra. Requer autenticação.
 
-Headers:
+**Exemplo de chamada:**
+```bash
+curl -X POST https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev/convert \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -d '{"amount":100,"from":"USD","to":"BRL"}'
+```
+
+**Headers:**
 ```
 Authorization: Bearer {token_jwt}
 Content-Type: application/json
 ```
 
-Request:
+**Request:**
 ```json
 {
   "amount": 100,
@@ -173,7 +149,7 @@ Request:
 }
 ```
 
-Response 200:
+**Response 200:**
 ```json
 {
   "amount": 100,
@@ -184,38 +160,36 @@ Response 200:
 }
 ```
 
-Response 400:
+**Response 400:**
 ```json
 {
   "error": "Invalid currency. Must be one of: USD, BRL, EUR, GBP, JPY."
 }
 ```
 
-Response 401:
+**Response 401:**
 ```json
 {
   "error": "Authorization token required"
 }
 ```
 
-Exemplo cURL:
-```bash
-curl -X POST https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev/convert \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
-  -d '{"amount":100,"from":"USD","to":"BRL"}'
-```
-
 ### GET /health
 
 Verifica o status da API. Requer autenticação.
 
-Headers:
+**Exemplo de chamada:**
+```bash
+curl -X GET https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev/health \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**Headers:**
 ```
 Authorization: Bearer {token_jwt}
 ```
 
-Response 200:
+**Response 200:**
 ```json
 {
   "status": "healthy",
@@ -224,25 +198,16 @@ Response 200:
 }
 ```
 
-Exemplo cURL:
-```bash
-curl -X GET https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev/health \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+**Response 401:**
+```json
+{
+  "error": "Authorization token required"
+}
 ```
 
 ## Moedas Suportadas
 
-Por padrão: USD, BRL, EUR, GBP, JPY
-
-
-## Variáveis de Ambiente
-
-Consulte o arquivo .env.example na raiz do projeto para ver todas as variáveis disponíveis.
-
-Variáveis obrigatórias em produção:
-- JWT_SECRET_KEY - Chave secreta para JWT (mínimo 32 caracteres)
-- AWS_ACCESS_KEY_ID - Credenciais AWS
-- AWS_SECRET_ACCESS_KEY - Credenciais AWS
+USD, BRL, EUR, GBP, JPY
 
 ## Testes
 
@@ -250,14 +215,12 @@ Backend:
 ```bash
 cd backend
 pytest
-pytest --cov=. --cov-report=html
 ```
 
 Frontend:
 ```bash
 cd frontend
 npm test
-npm run test:coverage
 ```
 
 ## Tecnologias
@@ -267,6 +230,7 @@ Frontend: Next.js 16, React 19, TypeScript, Tailwind CSS
 Autenticação: JWT, bcrypt
 Testes: pytest, Jest, Testing Library
 CI/CD: GitHub Actions
+
 
 ## Autor
 
