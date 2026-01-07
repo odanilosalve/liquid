@@ -1,2 +1,38 @@
+
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
 .local
 .env
+.venv
+
+# Serverless
+.serverless/
+.serverless_plugins/
+
+# Node (para plugins do serverless)
+node_modules/
+*.log
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
