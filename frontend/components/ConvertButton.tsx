@@ -24,8 +24,9 @@ export default function ConvertButton({ onClick, loading, disabled }: ConvertBut
         }
       }}
     >
-      {loading ? 'Convertendo...' : 'Converter'}
+      {loading ? 'Converting...' : 'Convert'}
     </button>
   );
 }
+
 

@@ -1,2 +1,13 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev';
+const getApiUrl = (): string => {
+  const url = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!url) {
+    throw new Error('NEXT_PUBLIC_API_URL environment variable must be defined. Please set it in your .env.local file.');
+  }
+  
+  return url;
+};
+
+export const API_URL = getApiUrl();
+
 

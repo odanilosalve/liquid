@@ -1,2 +1,14 @@
+# Core dependencies
+# Using >= allows automatic security patches while maintaining compatibility
 boto3>=1.34.0
+requests>=2.31.0
+PyJWT>=2.8.0
+cryptography>=41.0.0
+# bcrypt: Using >=4.0.1,<5.0.0 allows security patches while preventing breaking changes
+bcrypt>=4.0.1,<5.0.0
+
+# Testing dependencies
+pytest>=7.4.0
+pytest-mock>=3.11.0
+pytest-cov>=4.1.0
 

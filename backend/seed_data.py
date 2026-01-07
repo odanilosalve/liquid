@@ -1,7 +1,13 @@
 import boto3
 import json
+import logging
 from decimal import Decimal
 import os
+from botocore.exceptions import BotoCoreError, ClientError
+from exceptions import DatabaseError
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 REGION = 'us-east-1'
 STAGE = os.environ.get('STAGE', 'dev')
@@ -34,7 +40,7 @@ def seed_table():
     dynamodb = boto3.resource('dynamodb', region_name=REGION)
     table = dynamodb.Table(TABLE_NAME)
     
-    print(f'Populando tabela {TABLE_NAME}...')
+    logger.info(f'Populating table {TABLE_NAME}...')
     
     items_added = 0
     for from_currency, to_currency, rate in CURRENCY_RATES:
@@ -47,11 +53,15 @@ def seed_table():
                 }
             )
             items_added += 1
-            print(f'✓ Adicionado: {from_currency} -> {to_currency} = {rate}')
+            logger.info(f'Added: {from_currency} -> {to_currency} = {rate}')
+        except (BotoCoreError, ClientError) as e:
+            logger.error(f'Database error adding {from_currency} -> {to_currency}: {e}')
+        except (ValueError, TypeError) as e:
+            logger.error(f'Invalid data error adding {from_currency} -> {to_currency}: {e}')
         except Exception as e:
-            print(f'✗ Erro ao adicionar {from_currency} -> {to_currency}: {e}')
+            logger.error(f'Unexpected error adding {from_currency} -> {to_currency}: {e}')
     
-    print(f'\n✅ Total de {items_added} taxas adicionadas à tabela {TABLE_NAME}')
+    logger.info(f'Total of {items_added} rates added to table {TABLE_NAME}')
 
 if __name__ == '__main__':
     seed_table()
