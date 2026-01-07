@@ -7,7 +7,9 @@ on:
       - '**.md'
       - '.gitignore'
       - 'README.md'
-      - '.github/**'
+      - '.github/workflows/ci.yml'  # Ignora apenas mudanças no CI
+      # Nota: Mudanças em .github/workflows/deploy.yml NÃO são ignoradas,
+      # permitindo que o deploy execute quando o próprio workflow é atualizado
   workflow_dispatch:
     inputs:
       stage:
