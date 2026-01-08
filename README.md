@@ -41,14 +41,14 @@ Acessar: http://localhost:3000
 
 O frontend roda localmente e se conecta ao backend já deployado na AWS.
 
-### ⚠️ Credenciais de Acesso (Fundamental para Login)
+### ⚠️ Credenciais de Acesso (Fundamental para Login. Também pode ser usada para autenticar a API)
 
 **IMPORTANTE:** As credenciais abaixo são **obrigatórias** para acessar o sistema. Sem elas, não será possível fazer login na aplicação.
 
 - **Usuário:** `admin`
 - **Senha:** `admin123`
 
-> 💡 **Nota:** Utilize estas credenciais na tela de login para acessar todas as funcionalidades da aplicação de conversão de moedas.
+> 💡 **Nota:** Utilize estas credenciais na tela de login para acessar todas as funcionalidades da aplicação de conversão de moedas. Também pode ser usada para autenticar a API
 
 ## Deploy para AWS
 
@@ -59,16 +59,11 @@ O projeto possui CI/CD configurado via GitHub Actions.
 Configurar Secrets no GitHub:
 1. Vá em Settings → Secrets and variables → Actions
 2. Adicione as seguintes secrets:
-   - AWS_ACCESS_KEY_ID: Sua chave de acesso AWS (ex: AKIAIOSFODNN7EXAMPLE)
-   - AWS_SECRET_ACCESS_KEY: Sua chave secreta AWS (ex: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY)
-   - JWT_SECRET_KEY: Chave secreta para JWT (mínimo 32 caracteres)
+   - AWS_ACCESS_KEY_ID: (ex: AKIAIOSFODNN7EXAMPLE)
+   - AWS_SECRET_ACCESS_KEY: (ex: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY)
+   - JWT_SECRET_KEY: (mínimo 32 caracteres)
    - AWS_DEFAULT_REGION: us-east-1 (opcional, padrão é us-east-1)
 
-Importante ao configurar as secrets:
-- NÃO inclua espaços antes ou depois dos valores
-- NÃO inclua aspas ao redor dos valores
-- Copie e cole os valores exatamente como aparecem no AWS IAM
-- Verifique se não há caracteres invisíveis ou quebras de linha
 
 Deploy automático:
 - Push para main/master → Deploy automático para dev
@@ -98,7 +93,6 @@ Base URL: https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev
 
 Autentica um usuário e retorna um token JWT.
 
-> **📌 Credenciais necessárias:** Utilize `admin` / `admin123` (veja seção "Credenciais de Acesso" acima).
 
 **Exemplo de chamada:**
 ```bash
@@ -233,17 +227,3 @@ Frontend:
 cd frontend
 npm test
 ```
-
-## Tecnologias
-
-Backend: Python 3.11, AWS Lambda + Gateway API, DynamoDB, Serverless Framework
-Frontend: Next.js 16, React 19, TypeScript, Tailwind CSS
-Autenticação: JWT, bcrypt
-Testes: pytest, Jest, Testing Library
-CI/CD: GitHub Actions
-
-
-## Autor
-
-Danilo Salve
-danilo.salve@codenity.com.br
