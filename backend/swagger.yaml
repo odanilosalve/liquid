@@ -1,0 +1,256 @@
+openapi: 3.0.3
+info:
+  title: Liquid Currency Conversion API
+  description: API REST para conversão de moedas com autenticação JWT, cache de taxas no DynamoDB e integração com API externa de taxas de câmbio.
+  version: 1.0.0
+  contact:
+    name: Danilo Salve
+    email: danilo.salve@codenity.com.br
+servers:
+  - url: https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev
+    description: Development server
+tags:
+  - name: Authentication
+    description: Endpoints de autenticação
+  - name: Currency
+    description: Endpoints de conversão de moedas
+  - name: Health
+    description: Endpoints de verificação de status
+security:
+  - bearerAuth: []
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Autentica um usuário
+      description: Autentica um usuário e retorna um token JWT para uso nas requisições subsequentes
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: admin
+                  description: Nome de usuário
+                password:
+                  type: string
+                  format: password
+                  example: sua-senha
+                  description: Senha do usuário
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Token JWT para autenticação
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                        example: admin
+                      username:
+                        type: string
+                        example: admin
+        '400':
+          description: Requisição inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Username and password are required
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Invalid credentials
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Database error occurred
+  /convert:
+    post:
+      tags:
+        - Currency
+      summary: Converte valor entre moedas
+      description: Converte um valor de uma moeda para outra usando taxas de câmbio atualizadas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - from
+                - to
+              properties:
+                amount:
+                  type: number
+                  minimum: 0.01
+                  maximum: 1000000000
+                  example: 100
+                  description: Valor a ser convertido
+                from:
+                  type: string
+                  enum: [USD, BRL, EUR, GBP, JPY]
+                  example: USD
+                  description: Moeda de origem
+                to:
+                  type: string
+                  enum: [USD, BRL, EUR, GBP, JPY]
+                  example: BRL
+                  description: Moeda de destino
+      responses:
+        '200':
+          description: Conversão realizada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amount:
+                    type: number
+                    example: 100
+                    description: Valor original
+                  from:
+                    type: string
+                    example: USD
+                    description: Moeda de origem
+                  to:
+                    type: string
+                    example: BRL
+                    description: Moeda de destino
+                  rate:
+                    type: number
+                    example: 5.2
+                    description: Taxa de câmbio utilizada
+                  converted_amount:
+                    type: number
+                    example: 520.0
+                    description: Valor convertido
+        '400':
+          description: Requisição inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidCurrency:
+                  value:
+                    error: Invalid currency. Must be one of: USD, BRL, EUR, GBP, JPY.
+                invalidAmount:
+                  value:
+                    error: Amount must be between 0.01 and 1000000000
+        '401':
+          description: Token de autenticação ausente ou inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Authorization token required
+        '404':
+          description: Moeda não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Currency not found
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Database error occurred
+        '503':
+          description: API externa de taxas de câmbio indisponível
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: External currency API is currently unavailable
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Verifica o status da API
+      description: Retorna o status de saúde da API e informações do serviço
+      responses:
+        '200':
+          description: API está funcionando corretamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                    description: Status da API
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: '2025-01-01T00:00:00.000000'
+                    description: Timestamp da verificação
+                  service:
+                    type: string
+                    example: liquid-api
+                    description: Nome do serviço
+        '401':
+          description: Token de autenticação ausente ou inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Authorization token required
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT obtido através do endpoint /auth/login
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Mensagem de erro
+      required:
+        - error
+

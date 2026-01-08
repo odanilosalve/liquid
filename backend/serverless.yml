@@ -15,10 +15,6 @@ provider:
     EXCHANGE_RATE_API_URL: ${self:custom.exchangeRateApiUrl}
     EXTERNAL_API_TIMEOUT: ${self:custom.externalApiTimeout, '5'}
     CACHE_TTL_HOURS: ${self:custom.cacheTtlHours, '1'}
-    # ATENÇÃO: A chave padrão abaixo é APENAS para desenvolvimento local.
-    # Em produção, SEMPRE defina JWT_SECRET_KEY como variável de ambiente.
-    # O código valida e impede o uso da chave padrão em produção (ver utils/config_validator.py).
-    # NUNCA use 'dev-secret-key-change-in-production' em ambiente de produção!
     JWT_SECRET_KEY: ${env:JWT_SECRET_KEY, 'dev-secret-key-change-in-production'}
     JWT_ALGORITHM: HS256
     JWT_EXPIRATION_HOURS: 24
@@ -63,6 +59,24 @@ functions:
     events:
       - http:
           path: /health
+          method: get
+          cors: true
+  swagger:
+    handler: swagger_handler.swagger_ui
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    events:
+      - http:
+          path: /swagger
+          method: get
+          cors: true
+  swaggerYaml:
+    handler: swagger_handler.swagger_yaml
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    events:
+      - http:
+          path: /swagger.yaml
           method: get
           cors: true
 

@@ -3,6 +3,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import CurrencyConverter from '@/components/CurrencyConverter';
 import LoginForm from '@/components/LoginForm';
+import { API_URL } from '@/constants/api';
 
 export default function Home() {
   const { isAuthenticated, loading, logout, user } = useAuth();
@@ -48,7 +49,7 @@ export default function Home() {
       {!isAuthenticated && <LoginForm />}
       <footer className="py-6" style={{ backgroundColor: '#4180ab' }}>
         <div className="container mx-auto px-4">
-          <div className="flex justify-center items-center gap-6 text-sm">
+          <div className="flex justify-center items-center gap-6 text-sm flex-wrap">
             <a
               href="https://github.com/odanilosalve/liquid"
               target="_blank"
@@ -67,6 +68,16 @@ export default function Home() {
               style={{ color: '#ffffff' }}
             >
               LinkedIn
+            </a>
+            <span style={{ color: '#ffffff', opacity: 0.7 }}>|</span>
+            <a
+              href={`${API_URL}/swagger`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:opacity-70"
+              style={{ color: '#ffffff' }}
+            >
+              API Docs
             </a>
           </div>
         </div>
