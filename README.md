@@ -41,6 +41,15 @@ Acessar: http://localhost:3000
 
 O frontend roda localmente e se conecta ao backend já deployado na AWS.
 
+### ⚠️ Credenciais de Acesso (Fundamental para Login)
+
+**IMPORTANTE:** As credenciais abaixo são **obrigatórias** para acessar o sistema. Sem elas, não será possível fazer login na aplicação.
+
+- **Usuário:** `admin`
+- **Senha:** `admin123`
+
+> 💡 **Nota:** Utilize estas credenciais na tela de login para acessar todas as funcionalidades da aplicação de conversão de moedas.
+
 ## Deploy para AWS
 
 ### Deploy Automático (CI/CD)
@@ -89,18 +98,20 @@ Base URL: https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev
 
 Autentica um usuário e retorna um token JWT.
 
+> **📌 Credenciais necessárias:** Utilize `admin` / `admin123` (veja seção "Credenciais de Acesso" acima).
+
 **Exemplo de chamada:**
 ```bash
 curl -X POST https://kb9t8qu7ni.execute-api.us-east-1.amazonaws.com/dev/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"sua-senha"}'
+  -d '{"username":"admin","password":"admin123"}'
 ```
 
 **Request:**
 ```json
 {
   "username": "admin",
-  "password": "sua-senha"
+  "password": "admin123"
 }
 ```
 
