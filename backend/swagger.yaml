@@ -157,13 +157,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-              examples:
-                invalidCurrency:
-                  value:
-                    error: Invalid currency. Must be one of: USD, BRL, EUR, GBP, JPY.
-                invalidAmount:
-                  value:
-                    error: Amount must be between 0.01 and 1000000000
+              example:
+                error: "Invalid currency. Must be one of: USD, BRL, EUR, GBP, JPY."
         '401':
           description: Token de autenticação ausente ou inválido
           content:
